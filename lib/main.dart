@@ -93,23 +93,23 @@ class _MyHomePageState extends State<MyHomePage> {
             _buildTabItem(
               index: 0,
               icon: const Icon(Icons.menu),
-              text: '日程',
+              text: 'Schedule',
             ),
             _buildTabItem(
               index: 1,
               icon: const Icon(Icons.show_chart),
-              text: '图表',
+              text: 'Chart',
             ),
             const SizedBox(width: 48), // 为浮动按钮腾出空间
             _buildTabItem(
               index: 2,
               icon: const Icon(Icons.notifications),
-              text: '提醒',
+              text: 'Reminder',
             ),
             _buildTabItem(
               index: 3,
               icon: const Icon(Icons.person),
-              text: '我的',
+              text: 'Profile',
             ),
           ],
         ),
