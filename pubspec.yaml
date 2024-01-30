@@ -54,6 +54,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -93,7 +95,7 @@ flutter:
 
 
 icons_launcher:
-  image_path: "/Users/jiajunma/Documents/IoT/CASA0015/casa0015-BudgetWise-JiajunMa/assets/icon.png"
+  image_path: "assets/icon.png"
   platforms:
     android:
       enable: true
