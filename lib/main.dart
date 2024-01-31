@@ -1,7 +1,40 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 void main() {
+  db();
   runApp(const MyApp());
+}
+
+Future<void> db() async {
+  try {
+    final conn = await MySQLConnection.createConnection(
+      host: 'localhost',
+      port: 3306,
+      userName: 'root',
+      password: 'Mjj1212?',
+      databaseName: 'BudgetWise',
+    );
+
+    // 打开连接
+    await conn.connect();
+
+    // 查询表
+    final result = await conn.execute('SELECT * FROM users');
+
+    // 打印每一行数据
+    for (final row in result.rows) {
+      print(row.assoc());
+    }
+
+    // 关闭连接
+    await conn.close();
+  } catch (e) {
+    // 异常处理
+    print('Error: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -141,3 +174,5 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
+
+

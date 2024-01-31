@@ -1,0 +1,1 @@
+ /Users/jiajunma/Documents/IoT/CASA0015/casa0015-BudgetWise-JiajunMa/.dart_tool/flutter_build/a3127f939df6dfce8ceed7debe45ae11/native_assets.yaml: 
