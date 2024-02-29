@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyAhphQCS8vYyTrH2-z_QRkR7FUje2mXIqw</string>
+	<string>AIzaSyC5VgZMcX_CegYyLAp7DokZB8giqhQgsyo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>316255590629</string>
+	<string>288737818612</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.myfirstapp</string>
+	<string>com.example.testBudgetWise</string>
 	<key>PROJECT_ID</key>
-	<string>gothic-jigsaw-382223</string>
+	<string>budgetwise-ba9d7</string>
 	<key>STORAGE_BUCKET</key>
-	<string>gothic-jigsaw-382223.appspot.com</string>
+	<string>budgetwise-ba9d7.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:316255590629:ios:551f3fa24d0907e4151c0c</string>
+	<string>1:288737818612:ios:d17e14811d9de354af2ba1</string>
 </dict>
 </plist>

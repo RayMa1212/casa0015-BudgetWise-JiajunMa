@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -67,9 +68,33 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: _register,
               child: const Text('Sign Up'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                addUser().then((_) {
+                  // 这里可以添加一些用户反馈，比如一个确认消息
+                  print('User has been added successfully.');
+                }).catchError((error) {
+                  // 错误处理
+                  print('There was an error adding the user: $error');
+                });
+              },
+              child: Text('Add User'),
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+Future<void> addUser() async {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  return users
+      .add({
+    'full_name': "Jane Doe", // John Doe
+    'company': "Stokes and Sons",
+    'age': 42
+  })
+      .then((value) => print("User Added"))
+      .catchError((error) => print("Failed to add user: $error"));
 }

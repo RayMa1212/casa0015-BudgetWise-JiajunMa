@@ -50,20 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB1Yx_lNX3tuCcJI1rl81g8hLgs7ELusIA',
-    appId: '1:316255590629:android:abaa1b71544cac71151c0c',
-    messagingSenderId: '316255590629',
-    projectId: 'gothic-jigsaw-382223',
-    storageBucket: 'gothic-jigsaw-382223.appspot.com',
+    apiKey: 'AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA',
+    appId: '1:288737818612:android:b2667aba1bc2865baf2ba1',
+    messagingSenderId: '288737818612',
+    projectId: 'budgetwise-ba9d7',
+    storageBucket: 'budgetwise-ba9d7.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAhphQCS8vYyTrH2-z_QRkR7FUje2mXIqw',
-    appId: '1:316255590629:ios:551f3fa24d0907e4151c0c',
-    messagingSenderId: '316255590629',
-    projectId: 'gothic-jigsaw-382223',
-    storageBucket: 'gothic-jigsaw-382223.appspot.com',
-    iosClientId: '316255590629-lpnjkbc0d209lna43ono9bedlfiuj2fe.apps.googleusercontent.com',
-    iosBundleId: 'com.example.myfirstapp',
+    apiKey: 'AIzaSyC5VgZMcX_CegYyLAp7DokZB8giqhQgsyo',
+    appId: '1:288737818612:ios:d17e14811d9de354af2ba1',
+    messagingSenderId: '288737818612',
+    projectId: 'budgetwise-ba9d7',
+    storageBucket: 'budgetwise-ba9d7.appspot.com',
+    iosBundleId: 'com.example.testBudgetWise',
   );
 }

@@ -1,85 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-            toolbarHeight: 50.0
-        ),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x00ccecd4)),
-        useMaterial3: true,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Login Screen'),
-        ),
-        body: const LoginForm(),
-      ),
+      home: LoginPage(),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
-
+class LoginPage extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-  String _username = '';
-  String _password = '';
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  void _trySubmitForm() {
-    final isValid = _formKey.currentState?.validate();
-    if (isValid == true) {
-      // Close the keyboard
-      FocusScope.of(context).unfocus();
-      // TODO: Implement your login logic here
-      print('Username: $_username, Password: $_password');
+  Future<void> _login() async {
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      print("User logged in: ${userCredential.user}");
+      // 登录成功后的逻辑，比如导航到主页
+    } on FirebaseAuthException catch (e) {
+      // 登录失败的处理，比如显示错误信息
+      print("Login failed: ${e.message}");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Username'),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your username';
-                }
-                return null; // Return null if the input is valid
-              },
-              onSaved: (value) => _username = value!,
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true, // Hide the text being input
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
-                }
-                return null;
-              },
-              onSaved: (value) => _password = value!,
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _trySubmitForm,
-              child: const Text('Login'),
+              onPressed: _login,
+              child: Text('Login'),
             ),
           ],
         ),

@@ -1,43 +1,45 @@
 {
   "project_info": {
-    "project_number": "316255590629",
-    "project_id": "gothic-jigsaw-382223",
-    "storage_bucket": "gothic-jigsaw-382223.appspot.com"
+    "project_number": "288737818612",
+    "project_id": "budgetwise-ba9d7",
+    "storage_bucket": "budgetwise-ba9d7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:316255590629:android:abaa1b71544cac71151c0c",
+        "mobilesdk_app_id": "1:288737818612:android:3a15a5c6472f9e7baf2ba1",
         "android_client_info": {
           "package_name": "com.example.myfirstapp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "316255590629-o7jnapc236eoumr1thk1pckj3d5og8mi.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB1Yx_lNX3tuCcJI1rl81g8hLgs7ELusIA"
+          "current_key": "AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "316255590629-o7jnapc236eoumr1thk1pckj3d5og8mi.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "316255590629-lpnjkbc0d209lna43ono9bedlfiuj2fe.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.myfirstapp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288737818612:android:b2667aba1bc2865baf2ba1",
+        "android_client_info": {
+          "package_name": "com.example.test_budget_wise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

@@ -1,3 +1,4 @@
+import 'package:BudgetWise/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:BudgetWise/pages/home_page.dart';
 import 'package:BudgetWise/pages/signup_page.dart';
@@ -6,13 +7,36 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // 确保Flutter绑定已初始化
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // 使用生成的配置
-  );
+  if (!Firebase.apps.any((app) => app.name == Firebase.app().name)) {
+    await Firebase.initializeApp(
+      name: 'BudgetWise',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform, // 使用生成的配置
+  // );
   runApp(const MyApp());
+  // Create a new user with a first and last name
+  var db = FirebaseFirestore.instance;
+  final user = <String, dynamic>{
+    "first": "Ada",
+    "last": "Lovelace",
+    "born": 1815
+  };
+
+// Add a new document with a generated ID
+  db.collection("users").add(user).then((DocumentReference doc) =>
+      print('DocumentSnapshot added with ID: ${doc.id}'));
+
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,7 +61,7 @@ class MyApp extends StatelessWidget {
             User? user = snapshot.data;
             // 如果User为null，我们可以假定用户已登出
             if (user == null) {
-              return SignUpPage(); // 用户未登录，显示登录页面
+              return LoginPage(); // 用户未登录，显示登录页面
             }
             return MyHomePage(title: 'BudgetWise',); // 用户已登录，显示主页面
           }
