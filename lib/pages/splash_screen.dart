@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './homepage.dart'; // Ensure you have this file in your project.
+import './home_page.dart'; // Ensure you have this file in your project.
 
 class SplashScreen extends StatefulWidget {
   @override
