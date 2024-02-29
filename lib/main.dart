@@ -13,10 +13,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BudgetWise',
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(toolbarHeight: 50.0),
+        appBarTheme: const AppBarTheme(
+            toolbarHeight: 50.0
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x00ccecd4)),
         useMaterial3: true,
       ),
+      // home: const MyHomePage(title: 'BudgetWise'),
       home: SplashScreen(),
     );
   }
