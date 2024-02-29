@@ -92,6 +92,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "font_awesome_flutter",
+      "rootUri": "file:///Users/jiajunma/.pub-cache/hosted/pub.dev/font_awesome_flutter-10.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "icons_launcher",
       "rootUri": "file:///Users/jiajunma/.pub-cache/hosted/pub.dev/icons_launcher-2.1.7",
       "packageUri": "lib/",
@@ -266,7 +272,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-01-31T12:35:18.500195Z",
+  "generated": "2024-02-29T01:24:06.568630Z",
   "generator": "pub",
   "generatorVersion": "3.2.6"
 }
