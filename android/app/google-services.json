@@ -1,45 +1,36 @@
 {
   "project_info": {
-    "project_number": "288737818612",
-    "project_id": "budgetwise-ba9d7",
-    "storage_bucket": "budgetwise-ba9d7.appspot.com"
+    "project_number": "815672136647",
+    "project_id": "heliosrise2",
+    "storage_bucket": "heliosrise2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:288737818612:android:3a15a5c6472f9e7baf2ba1",
+        "mobilesdk_app_id": "1:815672136647:android:a9843d2bcc90e72b733fe2",
         "android_client_info": {
-          "package_name": "com.example.myfirstapp"
+          "package_name": "com.example.helios_rise"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "815672136647-bs9qsc636chh6hko5lnb19k932vrhu7c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA"
+          "current_key": "AIzaSyBebA8JbQrD9oZTune0ewb-GO99FRvo3zw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:288737818612:android:b2667aba1bc2865baf2ba1",
-        "android_client_info": {
-          "package_name": "com.example.test_budget_wise"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "815672136647-bs9qsc636chh6hko5lnb19k932vrhu7c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -2,18 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>815672136647-a36ef94ofndk20nmqr36aeepd337gd5i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.815672136647-a36ef94ofndk20nmqr36aeepd337gd5i</string>
 	<key>API_KEY</key>
-	<string>AIzaSyC5VgZMcX_CegYyLAp7DokZB8giqhQgsyo</string>
+	<string>AIzaSyCX9ex1CusxAHeDGsEAvBWZ6AQUE9yrAFU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>288737818612</string>
+	<string>815672136647</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.testBudgetWise</string>
+	<string>com.example.heliosRise</string>
 	<key>PROJECT_ID</key>
-	<string>budgetwise-ba9d7</string>
+	<string>heliosrise2</string>
 	<key>STORAGE_BUCKET</key>
-	<string>budgetwise-ba9d7.appspot.com</string>
+	<string>heliosrise2.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:288737818612:ios:d17e14811d9de354af2ba1</string>
+	<string>1:815672136647:ios:4d00bd73ef0be480733fe2</string>
 </dict>
 </plist>

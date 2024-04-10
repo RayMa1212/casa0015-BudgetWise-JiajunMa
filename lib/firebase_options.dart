@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAl-5894XoV3n9E2M_hwcmzw0cr75IKvGA',
-    appId: '1:288737818612:android:b2667aba1bc2865baf2ba1',
-    messagingSenderId: '288737818612',
-    projectId: 'budgetwise-ba9d7',
-    storageBucket: 'budgetwise-ba9d7.appspot.com',
+    apiKey: 'AIzaSyBebA8JbQrD9oZTune0ewb-GO99FRvo3zw',
+    appId: '1:815672136647:android:a9843d2bcc90e72b733fe2',
+    messagingSenderId: '815672136647',
+    projectId: 'heliosrise2',
+    storageBucket: 'heliosrise2.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC5VgZMcX_CegYyLAp7DokZB8giqhQgsyo',
-    appId: '1:288737818612:ios:d17e14811d9de354af2ba1',
-    messagingSenderId: '288737818612',
-    projectId: 'budgetwise-ba9d7',
-    storageBucket: 'budgetwise-ba9d7.appspot.com',
-    iosBundleId: 'com.example.testBudgetWise',
+    apiKey: 'AIzaSyCX9ex1CusxAHeDGsEAvBWZ6AQUE9yrAFU',
+    appId: '1:815672136647:ios:4d00bd73ef0be480733fe2',
+    messagingSenderId: '815672136647',
+    projectId: 'heliosrise2',
+    storageBucket: 'heliosrise2.appspot.com',
+    iosClientId: '815672136647-a36ef94ofndk20nmqr36aeepd337gd5i.apps.googleusercontent.com',
+    iosBundleId: 'com.example.heliosRise',
   );
 }

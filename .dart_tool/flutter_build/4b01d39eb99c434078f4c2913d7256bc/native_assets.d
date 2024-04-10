@@ -1,0 +1,1 @@
+ /Users/jiajunma/Documents/IoT/CASA0015/casa0015-HeliosRise-JiajunMa/.dart_tool/flutter_build/4b01d39eb99c434078f4c2913d7256bc/native_assets.yaml: 
