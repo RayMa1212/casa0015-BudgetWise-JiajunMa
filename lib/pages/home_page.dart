@@ -6,9 +6,10 @@ import 'package:helios_rise/services/firebase_service.dart';
 import 'package:helios_rise/services/location_service.dart';
 import 'package:helios_rise/pages/day_info_page.dart';
 import 'package:helios_rise/info/alarm_info.dart';
+import 'package:helios_rise/widget/alarm_info_widget.dart';
 import 'dart:math';
 
-enum DisplaySelection { morning, evening}
+enum DisplaySelection { morning, evening, map}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -22,6 +23,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DisplaySelection _selection = DisplaySelection.evening;
   List<String> daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  AlarmInfo? nextAlarmInfo;
 
   void _setMorning() {
     setState(() {
@@ -33,6 +35,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _setEvening() {
     setState(() {
       _selection = DisplaySelection.evening;
+    });
+  }
+
+  void _setMap() {
+    setState(() {
+      _selection = DisplaySelection.map;
     });
   }
 
@@ -72,11 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
     setState(() {});
+    showRoute();
   }
 
   Set<Polyline> _polylines = {};
 
-  Future<void> _fitRoute() async {
+  Future<void> _fitRoute(_mapController) async {
     if (_mapController == null || _markers.isEmpty || _polylines.isEmpty) return;
 
     var minLat = _markers.first.position.latitude;
@@ -112,35 +121,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   Future<void> showRoute() async {
-    List<LatLng>? points = await getRouteCoordinates(); // 使用 await 等待结果
-    if (points != null) { // 检查 points 是否非 null
+    if (nextAlarmInfo == null) {
+      print("Next alarm info not loaded yet.");
+      return;
+    }
+    List<LatLng>? points = await getRouteCoordinates(nextAlarmInfo);
+    if (points != null && points.isNotEmpty) {
       final PolylineId routePolylineId = PolylineId('route');
-      // 移除旧的路线 (如果存在)
-      _polylines.removeWhere((polyline) => polyline.polylineId == routePolylineId);
-
       setState(() {
+        _polylines.clear(); // 清除旧的路线
         _polylines.add(Polyline(
           polylineId: routePolylineId,
           width: 5,
           color: Colors.blue,
-          points: points, // 使用异步获取的 points
+          points: points,
         ));
+        addDestinationMarker(estimatedTime);
       });
-      addDestinationMarker(estimatedTime);
-      _fitRoute();
-      print("Fetch route coordinates successfully.");
+      await _fitRoute(_mapController);
     } else {
-      // 可以在这里处理无法获取路线数据的情况，比如给用户显示错误消息
       print("Unable to fetch route coordinates.");
     }
   }
 
 
 
-  Future<List<LatLng>?> getRouteCoordinates() async {
+
+  Future<List<LatLng>?> getRouteCoordinates(nextAlarmInfo) async {
     final LatLng? currentPosition = await LocationService().getCurrentLocation();
-    List<Map<String, dynamic>> documentData = await FirestoreService().fetchData();
-    String destination = documentData[0]["destination"];
+    // List<Map<String, dynamic>> documentData = await FirestoreService().fetchNextActiveAlarm();
+    String destination = nextAlarmInfo.destination;
     if (currentPosition != null && destination.isNotEmpty) {
       try {
         destinationLatLng = await LocationService().findPlace(destination);
@@ -183,10 +193,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _fetchNextActiveAlarm() async {
+    try {
+      nextAlarmInfo = await FirestoreService().fetchNextActiveAlarm();
+      if (mounted) setState(() {});
+    } catch (e) {
+      print('Failed to fetch next active alarm: $e');
+    }
+  }
+
 
   @override
   void initState() {
     super.initState();
+
+    _fetchNextActiveAlarm();
     _fetchActiveAlarms();
   }
 
@@ -209,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
             String subtitleText = "No alarm set";
             if (alarmOfTheDay != null) {
               subtitleText = 'Destination: ${alarmOfTheDay.destination}, Arrive by: ${alarmOfTheDay.timeToArrive}, Washing Time: ${alarmOfTheDay.washingTime} minutes';
-          }
+            }
 
             return Card(
               elevation: 2, // Add a little shadow to each card
@@ -237,31 +258,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
         break;
       case DisplaySelection.morning:
+        String alarmDetails = nextAlarmInfo != null
+            ? 'Next Alarm at ${nextAlarmInfo!.timeToArrive}'
+            : 'No upcoming alarms set';
+
+        bodyContent = Column(
+          children: [
+            SizedBox(height: 16),
+            Icon(Icons.wb_sunny, size: 100, color: Colors.orange),
+            Text(
+              'Good Morning!',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: PageView(
+                children: [
+                  // 第一个页面：闹钟信息
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: nextAlarmInfo != null
+                        ? AlarmInfoWidget(alarmInfo: nextAlarmInfo!)
+                        : Center(child: Text("No upcoming alarms.", style: TextStyle(fontSize: 18))),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+        break;
+      case DisplaySelection.map:
         bodyContent = SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Icon(Icons.wb_sunny, size: 100, color: Colors.orange),
-                Text(
-                  'Good Morning!',
-                  style: TextStyle(fontSize: 24),
-                ),
-
-                SizedBox(height: 16),
-
                 Container(
                   height: 300, // 指定高度
                   width: double.infinity, // 宽度尽可能大
                   child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: initialCameraPosition,
-                        myLocationEnabled: true, // 显示当前位置
-                        myLocationButtonEnabled: true, // 显示移动到当前位置的按钮
-                        markers: _markers,
-                        polylines: _polylines,
-                        padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
-                      ),
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: initialCameraPosition,
+                    myLocationEnabled: true, // 显示当前位置
+                    myLocationButtonEnabled: true, // 显示移动到当前位置的按钮
+                    markers: _markers,
+                    polylines: _polylines,
+                    padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
+                  ),
                 ),
               ],
             ),
@@ -283,9 +326,14 @@ class _MyHomePageState extends State<MyHomePage> {
         duration: const Duration(milliseconds: 500),
         child: bodyContent,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        notchMargin: 4.0,
+        notchMargin: 6.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -300,6 +348,12 @@ class _MyHomePageState extends State<MyHomePage> {
               color: _selection == DisplaySelection.morning ? selectedColor : unselectedColor,
               onPressed: _setMorning,
               tooltip: 'Morning View',
+            ),
+            IconButton(
+              icon: Icon(Icons.map),
+              color: _selection == DisplaySelection.map ? selectedColor : unselectedColor,  // 根据当前的选择改变颜色
+              onPressed: _setMap,
+              tooltip: 'Map View',
             ),
           ],
         ),

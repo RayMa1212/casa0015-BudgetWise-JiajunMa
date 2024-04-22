@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:helios_rise/info/alarm_info.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
+import 'package:intl/intl.dart';
+
 
 
 class FirestoreService {
@@ -148,6 +150,46 @@ class FirestoreService {
         .collection(day)
         .doc(docId)
         .delete();
+  }
+
+
+  Future<AlarmInfo?> fetchNextActiveAlarm() async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      throw Exception('User is not logged in');
+    }
+
+    Map<String, AlarmInfo> activeAlarmsByDay = await fetchActiveAlarmsByDay();
+    DateTime now = DateTime.now();
+    String today = DateFormat('EEEE').format(now);
+    List<String> daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    int todayIndex = daysOfWeek.indexOf(today);
+    List<String> queryDays = [
+      daysOfWeek[todayIndex], // today
+      daysOfWeek[(todayIndex + 1) % daysOfWeek.length] // next day
+    ];
+
+    for (String day in queryDays) {
+      if (!activeAlarmsByDay.containsKey(day)) continue; // Skip if no alarm for the day
+      AlarmInfo? alarm = activeAlarmsByDay[day];
+
+      if (alarm == null) continue; // If no alarm info available, continue to next
+
+      // For today, check if the alarm time is later than now
+      if (day == today) {
+        DateTime alarmTimeToday = DateFormat('HH:mm').parse(alarm.timeToArrive);
+        DateTime fullAlarmTimeToday = DateTime(now.year, now.month, now.day, alarmTimeToday.hour, alarmTimeToday.minute);
+        if (fullAlarmTimeToday.isAfter(now)) {
+          return alarm;
+        }
+      } else {
+        // For the next day, return the first alarm found
+        return alarm;
+      }
+    }
+
+    return null; // No valid alarms found if loop completes
   }
 
 
