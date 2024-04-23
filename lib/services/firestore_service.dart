@@ -214,37 +214,28 @@ class FirestoreService {
       throw Exception('User is not logged in');
     }
 
+    // 获取按星期几组织的闹钟数据
     Map<String, AlarmInfo> activeAlarmsByDay = await fetchActiveAlarmsByDay();
+
+    // 获取当前时间和明天的日期
     DateTime now = DateTime.now();
-    String today = DateFormat('EEEE').format(now);
-    List<String> daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    DateTime tomorrow = DateTime(now.year, now.month, now.day).add(Duration(days: 1));
+    String tomorrowDayOfWeek = DateFormat('EEEE').format(tomorrow);
 
-    int todayIndex = daysOfWeek.indexOf(today);
-    List<String> queryDays = [
-      daysOfWeek[todayIndex], // today
-      daysOfWeek[(todayIndex + 1) % daysOfWeek.length] // next day
-    ];
-
-    for (String day in queryDays) {
-      if (!activeAlarmsByDay.containsKey(day)) continue; // Skip if no alarm for the day
-      AlarmInfo? alarm = activeAlarmsByDay[day];
-
-      if (alarm == null) continue; // If no alarm info available, continue to next
-
-      // For today, check if the alarm time is later than now
-      if (day == today) {
-        DateTime alarmTimeToday = DateFormat('HH:mm').parse(alarm.timeToArrive);
-        DateTime fullAlarmTimeToday = DateTime(now.year, now.month, now.day, alarmTimeToday.hour, alarmTimeToday.minute);
-        if (fullAlarmTimeToday.isAfter(now)) {
-          return alarm;
-        }
-      } else {
-        // For the next day, return the first alarm found
+    // 通过枚举出来的明天的日期，判断是否有对应的闹钟
+    if (activeAlarmsByDay.containsKey(tomorrowDayOfWeek)) {
+      AlarmInfo? alarm = activeAlarmsByDay[tomorrowDayOfWeek];
+      if (alarm != null) {
+        // 如果明天有设置闹钟，返回这个闹钟信息
         return alarm;
+      } else {
+        // 如果明天没有闹钟信息
+        return null;
       }
+    } else {
+      // 如果明天不在闹钟映射中，表示没有设置闹钟
+      return null;
     }
-
-    return null; // No valid alarms found if loop completes
   }
 
 
