@@ -25,7 +25,7 @@ import '../services/posture_service.dart';
 import '../services/travel_service.dart';
 import 'edit_profile_page.dart';
 
-enum DisplaySelection { morning, evening, map, user}
+enum DisplaySelection {morning, evening, map, user }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
