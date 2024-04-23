@@ -4,6 +4,10 @@
 ![Untitled Notebook (3)-1](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4df332a2-8d9d-4020-933c-c86152e90ec5)
 
 ## Overview
+The HeliosRise app uses the accelerometers to detect the user’s posture. The alarm only deactivates when the user stands up, ensuring they physically get out of bed.
+
+###Adaptive Alarm Timing
+The HeliosRise app will adjust wake-up times based on traffic conditions, weather forecasts, the user’s target departure time, and destination to optimize waking up and commuting efficiently.
 The HeliosRise app integrates a smart alarm clock with a bracelet to monitor your sleep and wake you up efficiently with contextual suggestions based on your preferences and real-time data.
 
 ### Students
