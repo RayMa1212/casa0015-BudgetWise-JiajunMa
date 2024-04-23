@@ -3,7 +3,6 @@
 # Sketch
 ![Untitled Notebook (3)-1](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4df332a2-8d9d-4020-933c-c86152e90ec5)
 
-![Header (1)](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/60c3c9a0-766d-498e-a8d3-f2c96b3457b5)
 
 
 
