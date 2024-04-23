@@ -9,7 +9,9 @@
         .container { width: 80%; margin: auto; overflow: hidden; }
         header { background: #333; color: #fff; padding: 20px; text-align: center; }
         section { margin: 20px 0; }
-        img { width: 100%; max-width: 600px; display: block; margin: 20px auto; }
+        img { width: 100%; height: auto; }
+        .img-row { display: flex; justify-content: center; flex-wrap: wrap; }
+        .img-row img { margin: 10px; max-width: 300px; } /* Adjust max-width as needed */
         footer { background: #333; color: #fff; text-align: center; padding: 10px; position: fixed; left: 0; bottom: 0; width: 100%; }
     </style>
 </head>
@@ -23,10 +25,10 @@
         <section>
             <h2>Overview</h2>
             <p>The HeliosRise app uses accelerometers to detect the user’s posture. The alarm deactivates only when the user stands up, ensuring they physically get out of bed.</p>
-            <img src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4df332a2-8d9d-4020-933c-c86152e90ec5" alt="HeliosRise App Interface">
-            <img src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/057719f1-358d-4be9-b8c6-b41098e39d44" alt="HeliosRise App Interface">
-
-            
+            <div class="img-row">
+                <img src="https://path_to_your_image/4df332a2-8d9d-4020-933c-c86152e90ec5" alt="HeliosRise App Interface">
+                <img src="https://path_to_your_image/057719f1-358d-4be9-b8c6-b41098e39d44" alt="HeliosRise App Interface">
+            </div>
         </section>
 
         <section>
@@ -35,15 +37,13 @@
                 <li>Adaptive Alarm Timing: Adjusts wake-up times based on traffic and weather conditions.</li>
                 <li>Real-time Monitoring: Integrates with a smart bracelet to monitor sleep and activity.</li>
             </ul>
-            <img width="372" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/a138f191-845b-4aed-9603-f7ddbe5eede6">
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/ae9f2365-d2e2-482a-9842-dd2a32d29b63">
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4cb80438-6e5f-4eb4-8171-818de7628f2c">    
-            <img width="461" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/336220df-5705-4659-a4f5-014f5a9f04ae">
-            <img width="461" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/c9d673b0-0605-406e-ad44-310734b7f544">
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/ae9f2365-d2e2-482a-9842-dd2a32d29b63">
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4cb80438-6e5f-4eb4-8171-818de7628f2c"> 
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/404d5cf9-eaa6-4aff-a44e-aac26cd0b6b1">
-            <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/695d4d83-1f0f-4586-bb02-37c481e264bd">
+            <div class="img-row">
+                <!-- Add all your images within this div using img tags -->
+                <img src="https://path_to_your_image/a138f191-845b-4aed-9603-f7ddbe5eede6" alt="Feature Image">
+                <img src="https://path_to_your_image/ae9f2365-d2e2-482a-9842-dd2a32d29b63" alt="Feature Image">
+                <img src="https://path_to_your_image/4cb80438-6e5f-4eb4-8171-818de7628f2c" alt="Feature Image">
+                <!-- Add more images as needed -->
+            </div>
         </section>
 
         <section>
@@ -53,8 +53,10 @@
 
         <section>
             <h2>App Screenshots</h2>
-            <img src="https://path_to_your_image/login_page.png" alt="Login Page">
-            <img src="https://path_to_your_image/homepage.png" alt="Homepage">
+            <div class="img-row">
+                <img src="https://path_to_your_image/login_page.png" alt="Login Page">
+                <img src="https://path_to_your_image/homepage.png" alt="Homepage">
+            </div>
         </section>
     </div>
 
