@@ -1,23 +1,53 @@
-# REPLACE WITH YOUR APP NAME
+# HeliosRise
 
-This is the Final assessment template for CASA0014 - Please use this template and edit the relevant sections to personalise.
-This section has a short introduction to what the application is
+## Overview
+The Smart Alarm Clock System app integrates a smart alarm clock with a bracelet to monitor your sleep and wake you up efficiently with contextual suggestions based on your preferences and real-time data.
 
-## Use this README File 
+## How to Use the App
 
-Use this section to show us what your Mobile App is about.   Include a Screenshot to the App, link to the various frameworks you've used. Include your presentation video here that shows off your Mobile App.   Emojis are also fun to include 📱 😄
+### Step 1: Setup with the App
+- **Input Information:**
+  - **Destination:** UCL East
+  - **Preparing Time:** 10min
+  - **Arriving Time:** 9:00 AM
+  - **Preferred Traveling Method:** Bicycling
 
-Look at some other Flutter Apps online and see how they use there README File.  Good examples are:
+### Step 2: Check Display
+- **Essential Information:**
+  - **Destination:** UCL East
+  - **Estimated Wake Time:** 8:26 AM
+  - **Suggested Travel Method:** Bicycling
 
-- https://github.com/miickel/flutter_particle_clock
-- https://github.com/Tarikul711/flutter-food-delivery-app-ui    
-- https://github.com/mohak1283/Instagram-Clone
+### Step 3: Sleep with Bracelet
+- The bracelet monitors your on-bed time and your posture while you sleep, ensuring optimal wake-up conditions.
 
+### Step 4: Wake up by Alarm
+- **Posture Detection:** Stand for 10 seconds to shut off the alarm.
+- **Essential information:**
+  - **Wake Time:** 8:16 AM
+  - **Suggested Traveling Method:** Driving
+  - **Weather:** Rainy
+  - **Temperature:** 8°C
 
-## Include A Section That Tells Developers How To Install The App
+### Step 5: Check Clock Display
+- Review any updated information on the clock display after waking up.
 
-Include a section that gives intructions on how to install the app or run it in Flutter.  What versions of the plugins are you assuming?  Maybe define a licence
+### Step 6: Go to School
+- Follow the app’s guidance to reach your destination on time.
 
-##  Contact Details
+## Technical Details
+- **APIs Used:**
+  - `firebase_core`
+  - `firebase_auth`
+  - `cloud_firestore`
+- **Features:**
+  - Login and registration
+  - Homepage with weather and sensor data
+  - Alarm settings and customization
+  - Feedback system
 
-Having Contact Details is also good as it shows people how to get in contact with you if they'd like to contribute to the app. 
+## Future Enhancements
+- Improving the functionality and connectivity of the bracelet.
+- Expanding the capabilities to support more users and diversified use cases.
+
+Thank you for choosing the Smart Alarm Clock System for your daily routines!
