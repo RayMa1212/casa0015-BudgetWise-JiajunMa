@@ -31,7 +31,6 @@ The primary goal for all these groups is to enhance their morning routine throug
 
 ### Homepage
 ![image](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/cb152507-4125-49a2-9507-eb2445ced0f6)
-
 <img width="338" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/b6a75ce3-0538-4ee4-8626-4e7b3bf933c9">
 
 ### Homepage - Add Alarm
@@ -39,7 +38,6 @@ The primary goal for all these groups is to enhance their morning routine throug
 
 ### Homepage – Sensor Icon
 <img width="461" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/336220df-5705-4659-a4f5-014f5a9f04ae">
-
 <img width="461" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/c9d673b0-0605-406e-ad44-310734b7f544">
 
 ### Day of Week Page
@@ -47,12 +45,10 @@ The primary goal for all these groups is to enhance their morning routine throug
 
 ### Add Alarm Page
 <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/ae9f2365-d2e2-482a-9842-dd2a32d29b63">
-
 <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4cb80438-6e5f-4eb4-8171-818de7628f2c">
 
 ### User Page and FeedBack Page
 <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/404d5cf9-eaa6-4aff-a44e-aac26cd0b6b1">
-
 <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/695d4d83-1f0f-4586-bb02-37c481e264bd">
 
 
