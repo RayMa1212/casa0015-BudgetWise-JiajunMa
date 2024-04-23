@@ -3,6 +3,10 @@
 # Sketch
 ![Untitled Notebook (3)-1](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/4df332a2-8d9d-4020-933c-c86152e90ec5)
 
+![Header (1)](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/60c3c9a0-766d-498e-a8d3-f2c96b3457b5)
+
+
+
 ## Overview
 The HeliosRise app uses the accelerometers to detect the user’s posture. The alarm only deactivates when the user stands up, ensuring they physically get out of bed.
 
@@ -46,6 +50,7 @@ The primary goal for all these groups is to enhance their morning routine throug
 
 ### Day of Week Page
 ![image](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/d29f387b-d007-4a3b-9b94-a6ed652bd625)
+
 
 
 ### Add Alarm Page
