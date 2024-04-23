@@ -62,6 +62,7 @@ The primary goal for all these groups is to enhance their morning routine throug
   - **Preparing Time:** 10min
   - **Arriving Time:** 9:00 AM
   - **Preferred Traveling Method:** Bicycling
+  
   ![image](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/f54faf19-c718-46b6-b180-57e89c9fd1ea)
 
 
