@@ -10,7 +10,7 @@ class WeatherService {
   void startPolling() {
     Uri url = Uri.parse('http://api.openweathermap.org/data/3.0/onecall?lat=51.5074&lon=-0.1278&exclude=minutely,hourly,daily,alerts&units=metric&appid=$apiKey');
 
-    _timer = Timer.periodic(Duration(seconds: 100000), (timer) async {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
