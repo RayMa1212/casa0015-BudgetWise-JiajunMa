@@ -102,6 +102,17 @@ The primary goal for all these groups is to enhance their morning routine throug
   - `firebase_core`
   - `firebase_auth`
   - `cloud_firestore`
+  - `firebase_storage`
+  - `image_picker`
+  - `modal_bottom_sheet`
+  - `flutter_local_notifications`
+  - `udioplayers`
+  - `google_maps_flutter`
+  - `android_alarm_manager_plus`
+  - `intl`
+  - `http`
+
+  location: ^5.0.3
 - **Features:**
   - Login and registration
   - Homepage with weather and sensor data
