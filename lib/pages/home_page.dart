@@ -457,15 +457,7 @@ class _MyHomePageState extends State<MyHomePage> {
         );
         break;
       case DisplaySelection.map:
-        bodyContent = SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Container(
-                  height: 300, // 指定高度
-                  width: double.infinity, // 宽度尽可能大
-                  child: GoogleMap(
+        bodyContent = GoogleMap(
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: initialCameraPosition,
                     myLocationEnabled: true, // 显示当前位置
@@ -473,8 +465,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     markers: _markers,
                     polylines: _polylines,
                     padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
-                  ),
-                ),
+                  );
+
 
                 // ElevatedButton(
                 //   onPressed: (){
@@ -511,11 +503,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 //     return Center(child: CircularProgressIndicator());
                 //   },
                 // ),
-              ],
-            ),
-          ),
 
-        );
+
         break;
       case DisplaySelection.user:
         if (userId == null) {
