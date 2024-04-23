@@ -128,10 +128,10 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
   }
 
   Widget _buildSuggestions() {
-    // 判断是否有建议并显示，这里简化处理为直接返回一个Container
-    // 实际应用中，你可能需要一个更复杂的ListView或者其他布局方式来展示建议
+    // Determine whether there are suggestions and display them. The processing here is simplified to directly return a Container.
+    // n actual applications, you may need a more complex ListView or other layout methods to display suggestions
     return Container(
-      height: 100.0, // 指定一个高度
+      height: 100.0,
       child: ListView.builder(
         itemCount: _suggestions.length,
         itemBuilder: (context, index) {
@@ -170,8 +170,6 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // 在这里执行返回操作
-            // 通常是调用 Navigator.pop(context)
             Navigator.pop(context);
           },
         ),
@@ -192,7 +190,7 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
 
 
               TextFormField(
-                controller: _destinationController, // 关联 TextEditingController
+                controller: _destinationController, //  TextEditingController
                 decoration: const InputDecoration(
                   labelText: 'Destination',
                   border: OutlineInputBorder(),

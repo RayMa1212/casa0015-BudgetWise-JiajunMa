@@ -20,29 +20,29 @@ class _DayInfoScreenState extends State<DayInfoScreen> {
 
   void _handleSwitchChange(AlarmInfo toggledAlarm, bool newValue, alarms) {
     setState(() {
-      // 更新被切换的闹钟状态
+      // Update the status of the toggled alarm clock
       toggledAlarm.status = newValue;
-      // 将其他所有闹钟的状态设置为false
+      // Set the status of all other alarms to false
       _alarms.where((alarm) => alarm.id != toggledAlarm.id).forEach((alarm) {
         alarm.status = false;
       });
     });
 
-    // 调用Firestore服务更新数据库
+    // Call the Firestore service to update the database
     FirestoreService().updateAlarm(toggledAlarm, newValue, widget.day);
   }
 
   Future<void> _fetchAndStoreAlarms() async {
     List<AlarmInfo> fetchedAlarms = await FirestoreService().fetchAlarms(widget.day);
     setState(() {
-      _alarms = fetchedAlarms; // 更新本地列表
+      _alarms = fetchedAlarms;
     });
   }
 
   void _deleteItem(day, index) {
     FirestoreService().deleteAlarmFromFirestore(index, day);
     setState(() {
-      _alarms.removeWhere((alarm) => alarm.id == index); // 删除特定索引的元素
+      _alarms.removeWhere((alarm) => alarm.id == index); // Delete elements at a specific index
     });
   }
 
@@ -62,8 +62,6 @@ class _DayInfoScreenState extends State<DayInfoScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              // 在这里执行返回操作
-              // 通常是调用 Navigator.pop(context)
 
               Navigator.pop(context, true);
             },
@@ -88,7 +86,7 @@ class _DayInfoScreenState extends State<DayInfoScreen> {
               key: Key(alarm.id),
               onDismissed: (direction) {
                 _deleteItem(widget.day, alarm.id);
-                // 显示一个 Snackbar
+                // Show a Snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Clock dismissed')),
                 );
@@ -98,7 +96,7 @@ class _DayInfoScreenState extends State<DayInfoScreen> {
                 title: Text(alarm.destination),
                 subtitle: Text('Arrive by: ${alarm.timeToArrive}, Washing Time: ${alarm.washingTime} minutes'),
                 trailing: Switch(
-                  key: Key(alarm.id), // 使用唯一的Key
+                  key: Key(alarm.id),
                   value: alarm.status,
                   onChanged: (bool newValue) {
                     _handleSwitchChange(alarm, newValue, _alarms);

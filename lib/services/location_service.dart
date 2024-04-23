@@ -63,18 +63,18 @@ class LocationService {
           final location = result['candidates'][0]['geometry']['location'];
           final LatLng placeLocation = LatLng(location['lat'], location['lng']);
           print("Location: ${placeLocation.latitude}, ${placeLocation.longitude}");
-          return placeLocation; // 返回找到的地点的位置
+          return placeLocation;
         } else {
           print('No results found.');
-          return null; // 没有找到结果
+          return null;
         }
       } else {
         print('Failed to find place.');
-        return null; // 请求失败
+        return null;
       }
     } catch (e) {
       print('Exception caught: $e');
-      return null; // 捕获到异常
+      return null;
     }
   }
 

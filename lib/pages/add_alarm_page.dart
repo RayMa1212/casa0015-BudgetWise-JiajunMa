@@ -79,34 +79,13 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
     }
   }
 
-  // Future<List<LatLng>?> getRouteCoordinates() async {
-  //   final LatLng? currentPosition = await LocationService().getCurrentLocation();
-  //   List<Map<String, dynamic>> documentData = await FirestoreService().fetchData();
-  //   String destination = documentData[0]["destination"];
-  //   if (currentPosition != null && destination.isNotEmpty) {
-  //     try {
-  //       destinationLatLng = await LocationService().findPlace(destination);
-  //       final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
-  //       if (safeDestinationLatLng != null) {
-  //         Map<String, dynamic> data = await LocationService().getRouteData(currentPosition, safeDestinationLatLng);
-  //         String encodedPath = await LocationService().getRouteCoordinates(data);
-  //         estimatedTime = await LocationService().getTravelTime(data);
-  //         List<LatLng> points = LocationService().decodePolyline(encodedPath);
-  //         return points; // 返回路线点的列表
-  //       }
-  //     } catch (e) {
-  //       // 处理异常，给用户适当的反馈
-  //       print('Error fetching route: $e');
-  //     }
-  //   }
-  //   return null; // 在无法获取路线数据的情况下返回 null
-  // }
+
 
   Widget _buildSuggestions() {
-    // 判断是否有建议并显示，这里简化处理为直接返回一个Container
-    // 实际应用中，你可能需要一个更复杂的ListView或者其他布局方式来展示建议
+    // Determine whether there are suggestions and display them. The process is simplified here and directly returns a Container.
+    //In actual applications, you may need a more complex ListView or other layout methods to display suggestions
     return Container(
-      height: 100.0, // 指定一个高度
+      height: 100.0,
       child: ListView.builder(
         itemCount: _suggestions.length,
         itemBuilder: (context, index) {
@@ -149,8 +128,8 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // 在这里执行返回操作
-            // 通常是调用 Navigator.pop(context)
+            // Perform return operation here
+            // Usually call Navigator.pop(context)
             Navigator.pop(context);
           },
         ),
@@ -230,15 +209,6 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              // CheckboxListTile(
-              //   value: allow_later_than_set,
-              //   onChanged: (bool? value) {
-              //     setState(() {
-              //       allow_later_than_set= value!;
-              //     });
-              //   },
-              //   title: const Text('Allow later than set'),
-              // ),
 
 
               SizedBox(height: 8),
@@ -250,7 +220,6 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                 child: Text(_arrivalTime == null ? 'Select Time to Arrive' : 'Time: ${_arrivalTime!.format(context)}'),
               ),
 
-              // 添加一个按钮或输入字段以设置洗漱时间
               SizedBox(height: 8),
 
 
@@ -265,22 +234,6 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                 },
               ),
 
-
-              SizedBox(height: 16),
-
-              // Column(
-              //   children: [
-              //     // 按钮，用于显示和选择重复天数
-              //     ListTile(
-              //       title: Text('Repeat'),
-              //       subtitle: Text(getSelectedDaysText()), // 显示选中的天数
-              //       trailing: IconButton(
-              //         icon: Icon(Icons.edit),
-              //         onPressed: _showRepeatDaysSelection,
-              //       ),
-              //     ),
-              //   ],
-              // ),
 
 
               SizedBox(height: 16),

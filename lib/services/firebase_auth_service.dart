@@ -9,7 +9,7 @@ class Authservice {
   void signOut(BuildContext context) async {
     try {
       await _auth.signOut();
-      // 登出成功后，返回登录页面或其他页面
+      // After logging out successfully, return to the login page or other pages
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => LoginPage()),
       );

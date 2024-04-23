@@ -28,7 +28,7 @@ class AlarmInfo {
 
   factory AlarmInfo.fromMap(Map<String, dynamic> map, String id) {
     return AlarmInfo(
-      id: id, // 设置文档ID
+      id: id, // set ID
       destination: map['destination'],
       travelMethods: List<String>.from(map['travelMethod']),
       wakeUpPolicy: map['wakeUpPolicy'],

@@ -17,8 +17,8 @@ void stopSound() async {
 Future<void> setOneShotAlarm(DateTime alarmTime) async {
   await AndroidAlarmManager.oneShotAt(
     alarmTime,
-    0, // 唯一标识符
-    playSound, // 播放音乐的函数
+    0, // unique identifier
+    playSound, // function to play music
     exact: true,
     wakeup: true,
   );

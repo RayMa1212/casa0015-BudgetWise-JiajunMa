@@ -20,7 +20,7 @@ class FirestoreService {
     required LatLng currentPosition,
     required LatLng destinationPosition,
     required int washingTime,
-    required String dayOfWeek, // 添加一个参数来指定星期几
+    required String dayOfWeek, // Add a parameter to specify the day of the week
     required bool status,
   }) async {
     String? userId = FirebaseAuth.instance.currentUser?.uid;
@@ -28,7 +28,7 @@ class FirestoreService {
       throw Exception('User not logged in');
     }
 
-    // 创建唯一ID，例如使用时间戳
+    // Create a unique ID, for example using a timestamp
     String documentId = '${DateTime.now().millisecondsSinceEpoch}';
 
 
@@ -36,7 +36,7 @@ class FirestoreService {
         .collection('user_data')
         .doc(userId)
         .collection(dayOfWeek)
-        .doc(documentId); // 使用星期几作为文档ID
+        .doc(documentId); // Use day of week as document ID
 
     return await docRef.set({
       'destination': destination,
@@ -88,25 +88,25 @@ class FirestoreService {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
     try {
-      // 获取该日所有闹钟
+      // Get all alarms for that day
       QuerySnapshot snapshot = await alarmsCollection.get();
 
       for (var doc in snapshot.docs) {
-        // 将所有闹钟的status设置为false
+        // Set the status of all alarm clocks to false
         batch.update(doc.reference, {'status': false});
       }
 
-      // 提交批处理操作
+      // Submit batch operation
       await batch.commit();
     } catch (e) {
-      print(e); // 处理错误
+      print(e); // handling errors
     }
 
     await FirebaseFirestore.instance
         .collection('user_data')
         .doc(userId)
         .collection(day)
-        .doc(alarm.id) // 使用存储在AlarmInfo中的文档ID
+        .doc(alarm.id) // Use the document ID stored in AlarmInfo
         .update({'status': isEnabled})
         .catchError((error) => print("Error updating alarm enabled status: $error"));
   }
@@ -131,13 +131,13 @@ class FirestoreService {
       QuerySnapshot snapshot = await alarmsCollection.get();
 
       for (var doc in snapshot.docs) {
-        // 将所有闹钟的status设置为false，除了当前要更新的闹钟
+        // Set status to false for all alarms except the one currently being updated
         if (doc.id != updatedAlarm.id) {
           batch.update(doc.reference, {'status': false});
         }
       }
 
-      // 更新目标闹钟的信息
+      // Update target alarm information
       DocumentReference targetAlarmRef = alarmsCollection.doc(updatedAlarm.id);
       batch.update(targetAlarmRef, {
         'destination': updatedAlarm.destination,
@@ -154,10 +154,9 @@ class FirestoreService {
           'latitude': updatedAlarm.destinationPosition.latitude,
           'longitude': updatedAlarm.destinationPosition.longitude
         },
-        // 更新其他必要的字段
+        // Update other necessary fields
       });
 
-      // 提交批处理操作
       await batch.commit();
     } catch (e) {
       print("Error updating alarms: $e");

@@ -28,9 +28,9 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => MyHomePage(title: 'HeliosRise')),
       );
-      // 登录成功后的逻辑，比如导航到主页
+      // Logic after successful login, such as navigating to the homepage
     } on FirebaseAuthException catch (e) {
-      // 登录失败的处理，比如显示错误信息
+      // Handling failed logins, such as displaying error messages
       print("Login failed: ${e.message}");
     }
   }

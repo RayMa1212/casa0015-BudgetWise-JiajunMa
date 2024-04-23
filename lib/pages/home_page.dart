@@ -22,7 +22,6 @@ import 'dart:math';
 import 'package:helios_rise/services/clock_service.dart';
 import '../services/posture_service.dart';
 import '../services/travel_service.dart';
-import 'edit_profile_page.dart';
 
 enum DisplaySelection {morning, evening, map, user }
 
@@ -72,11 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addDestinationMarker(int estimatedTime) async {
     if (destinationLatLng != null) {
-      final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
+      final LatLng safeDestinationLatLng = destinationLatLng!; // Use ! to assert non-null and assign it to a local variable
       print ("safeDestinationLatLng: $safeDestinationLatLng");
       final Marker destinationLocationMarker = Marker(
         markerId: MarkerId("destination_marker"),
-        position: safeDestinationLatLng, // 使用本地变量
+        position: safeDestinationLatLng,
         infoWindow: InfoWindow(
           title: "Destination",
           snippet: "Estimated travel time: $estimatedTime",
@@ -148,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (points != null && points.isNotEmpty) {
       final PolylineId routePolylineId = PolylineId('route');
       setState(() {
-        _polylines.clear(); // 清除旧的路线
+        _polylines.clear(); // Clear old routes
         _polylines.add(Polyline(
           polylineId: routePolylineId,
           width: 5,
@@ -171,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (currentPosition != null && destination.isNotEmpty) {
       try {
         destinationLatLng = await LocationService().findPlace(destination);
-        final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
+        final LatLng safeDestinationLatLng = destinationLatLng!; // Use ! to assert non-null and assign it to a local variable
         if (safeDestinationLatLng != null) {
           Map<String, dynamic> data = await LocationService().getRouteDataWithMode(currentPosition, safeDestinationLatLng, mode);
           printRouteDetails(data);
@@ -430,7 +429,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(16.0),
                     child: nextAlarmInfo != null
                         ? FutureBuilder<Map<String, dynamic>>(
-                      future: _travelService.getTravelTimes(nextAlarmInfo!),  // 获取旅行时间
+                      future: _travelService.getTravelTimes(nextAlarmInfo!),  // Get travel time
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasData) {
@@ -443,7 +442,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             return Text('Error fetching travel times: ${snapshot.error}');
                           }
                         }
-                        return CircularProgressIndicator();  // 加载中显示进度指示器
+                        return CircularProgressIndicator();  // Show progress indicator while loading
                       },
                     )
                         : Center(child: Text("No upcoming alarms.", style: TextStyle(fontSize: 18))),
@@ -459,49 +458,13 @@ class _MyHomePageState extends State<MyHomePage> {
         bodyContent = GoogleMap(
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: initialCameraPosition,
-                    myLocationEnabled: true, // 显示当前位置
-                    myLocationButtonEnabled: true, // 显示移动到当前位置的按钮
+                    myLocationEnabled: true, // Show current location
+                    myLocationButtonEnabled: true, // Show button to move to current location
                     markers: _markers,
                     polylines: _polylines,
                     padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
                   );
 
-
-                // ElevatedButton(
-                //   onPressed: (){
-                //     stopSound();
-                //   },
-                //   child: Text('Stop Alarm')
-                // ),
-                // ElevatedButton(
-                //   onPressed: setOneShotAlarm,
-                //   child: Text('Set One Shot Alarm'),
-                // ),
-                // FutureBuilder<Map<String, dynamic>?>(
-                //   future: routeFuture,
-                //   builder: (context, snapshot) {
-                //     if (snapshot.connectionState == ConnectionState.done) {
-                //       if (snapshot.hasData && snapshot.data != null) {
-                //         return SingleChildScrollView(
-                //           child: Padding(
-                //             padding: EdgeInsets.all(16.0),
-                //             child: Column(
-                //               crossAxisAlignment: CrossAxisAlignment.start,
-                //               children: <Widget>[
-                //                 Text("Distance: ${snapshot.data!['routes'][0]['legs'][0]['distance']['text']}", style: TextStyle(fontSize: 18)),
-                //                 Text("Duration: ${snapshot.data!['routes'][0]['legs'][0]['duration']['text']}", style: TextStyle(fontSize: 18)),
-                //                 // 可以添加更多细节
-                //               ],
-                //             ),
-                //           ),
-                //         );
-                //       } else if (snapshot.hasError) {
-                //         return Text("Error: ${snapshot.error}");
-                //       }
-                //     }
-                //     return Center(child: CircularProgressIndicator());
-                //   },
-                // ),
 
 
         break;
@@ -630,7 +593,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.red, fontSize: 24),
                 );
               }
-              return CircularProgressIndicator(); // 加载中
+              return CircularProgressIndicator();
             },
           ),
 
@@ -689,12 +652,12 @@ class _MyHomePageState extends State<MyHomePage> {
             stream: _cloudService.controller.stream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                // 根据布尔值选择图标
+                // Select icon based on boolean value
                 IconData iconData = snapshot.data! ? Icons.bed : Icons.accessibility;
                 return IconButton(
                   icon: Icon(iconData),
                   onPressed: () {
-                    // 可以在这里添加点击图标后的操作
+                    // You can add actions after clicking the icon here
                     print("Icon pressed!");
                   },
                 );
@@ -702,7 +665,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // 处理错误情况
                 return Text("Err!");
               }
-              // 默认情况下显示一个循环指示器
+              // Displays a loop indicator by default
               return CircularProgressIndicator();
             },
           ),
