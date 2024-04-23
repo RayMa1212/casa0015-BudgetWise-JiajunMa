@@ -15,7 +15,7 @@ class FirestoreService {
     required String destination,
     required List<String> travelMethods,
     required String wakeUpPolicy,
-    required bool allowLaterThanSet,
+    // required bool allowLaterThanSet,
     required String timeToArrive,
     required LatLng currentPosition,
     required LatLng destinationPosition,
@@ -42,7 +42,7 @@ class FirestoreService {
       'destination': destination,
       'travelMethod': travelMethods,
       'wakeUpPolicy': wakeUpPolicy,
-      'allowLaterThanSet': allowLaterThanSet,
+      // 'allowLaterThanSet': allowLaterThanSet,
       'timeToArrive': timeToArrive,
       'timestamp': FieldValue.serverTimestamp(),
       'currentPosition': {
@@ -110,6 +110,61 @@ class FirestoreService {
         .update({'status': isEnabled})
         .catchError((error) => print("Error updating alarm enabled status: $error"));
   }
+
+  Future<void> updateAlarmInfo(AlarmInfo updatedAlarm, String day) async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userId == null) {
+      print("User not logged in");
+      return;
+    }
+
+    CollectionReference alarmsCollection = FirebaseFirestore.instance
+        .collection('user_data')
+        .doc(userId)
+        .collection(day);
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    try {
+      // 获取该日所有闹钟
+      QuerySnapshot snapshot = await alarmsCollection.get();
+
+      for (var doc in snapshot.docs) {
+        // 将所有闹钟的status设置为false，除了当前要更新的闹钟
+        if (doc.id != updatedAlarm.id) {
+          batch.update(doc.reference, {'status': false});
+        }
+      }
+
+      // 更新目标闹钟的信息
+      DocumentReference targetAlarmRef = alarmsCollection.doc(updatedAlarm.id);
+      batch.update(targetAlarmRef, {
+        'destination': updatedAlarm.destination,
+        'timeToArrive': updatedAlarm.timeToArrive,
+        'washingTime': updatedAlarm.washingTime,
+
+        'travelMethod': updatedAlarm.travelMethods,
+        'wakeUpPolicy': updatedAlarm.wakeUpPolicy,
+        // 'allowLaterThanSet': updatedAlarm.allowLaterThanSet,
+
+        'timestamp': FieldValue.serverTimestamp(),
+
+        'destinationPosition': {
+          'latitude': updatedAlarm.destinationPosition.latitude,
+          'longitude': updatedAlarm.destinationPosition.longitude
+        },
+        // 更新其他必要的字段
+      });
+
+      // 提交批处理操作
+      await batch.commit();
+    } catch (e) {
+      print("Error updating alarms: $e");
+    }
+  }
+
+
 
   Future<Map<String, AlarmInfo>> fetchActiveAlarmsByDay() async {
     Map<String, AlarmInfo> activeAlarmsByDay = {};
@@ -201,37 +256,37 @@ class FirestoreService {
 
 
 
-  Future<List<Map<String, dynamic>>> fetchData() async {
-    // 确保用户已经登录
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId == null) {
-      print('User not logged in');
-      return [];
-    }
-
-
-
-    // 获取当前用户的 evening_entries 集合中的所有文档
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('user_data')
-        .doc(userId)
-        .collection('evening_entries')
-        .get();
-
-    // Create a list to hold the data from each document
-    List<Map<String, dynamic>> documentsData = [];
-
-    // Iterate over each document
-    for (var doc in querySnapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      // Add the document's data to the list
-      documentsData.add(data);
-    }
-
-    // Return the list of documents' data
-    return documentsData;
-
-  }
+// Future<List<Map<String, dynamic>>> fetchData() async {
+//   // 确保用户已经登录
+//   String? userId = FirebaseAuth.instance.currentUser?.uid;
+//   if (userId == null) {
+//     print('User not logged in');
+//     return [];
+//   }
+//
+//
+//
+//   // 获取当前用户的 evening_entries 集合中的所有文档
+//   QuerySnapshot querySnapshot = await _firestore
+//       .collection('user_data')
+//       .doc(userId)
+//       .collection('evening_entries')
+//       .get();
+//
+//   // Create a list to hold the data from each document
+//   List<Map<String, dynamic>> documentsData = [];
+//
+//   // Iterate over each document
+//   for (var doc in querySnapshot.docs) {
+//     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+//     // Add the document's data to the list
+//     documentsData.add(data);
+//   }
+//
+//   // Return the list of documents' data
+//   return documentsData;
+//
+// }
 
 
 

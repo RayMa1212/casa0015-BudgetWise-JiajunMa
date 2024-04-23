@@ -89,6 +89,17 @@ class LocationService {
     return data;
   }
 
+  Future<Map<String, dynamic>> getRouteDataWithMode(LatLng start, LatLng destination, mode) async {
+    final String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${destination.latitude},${destination.longitude}&mode=$mode&key=AIzaSyCX9ex1CusxAHeDGsEAvBWZ6AQUE9yrAFU';
+    // print(url);
+    final http.Response response = await http.get(Uri.parse(url));
+    // print('Status code: ${response.statusCode}');
+    // print('Headers: ${response.headers}');
+    // print('Body: ${response.body}');
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return data;
+  }
+
 
   Future<int> getTravelTime(Map<String, dynamic> data) async {
     if (data['status'] == 'OK') {
@@ -102,7 +113,7 @@ class LocationService {
   }
 
 
-    Future<String> getRouteCoordinates(Map<String, dynamic> data) async {
+  Future<String> getRouteCoordinates(Map<String, dynamic> data) async {
     if (data['status'] == 'OK') {
       final String encodedPath = data['routes'][0]['overview_polyline']['points'] as String;
       return encodedPath;
@@ -143,7 +154,7 @@ class LocationService {
     return points;
   }
 
-  
+
 
 
 

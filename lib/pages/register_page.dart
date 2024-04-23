@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:helios_rise/pages/home_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:helios_rise/pages/login_page.dart';
+import 'dart:io';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -12,6 +17,28 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String> _uploadImage(File imageFile) async {
+    String fileName = 'avatars/${DateTime.now().millisecondsSinceEpoch.toString()}.jpg';
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child(fileName);
+    UploadTask uploadTask = ref.putFile(imageFile);
+    await uploadTask;
+    return await ref.getDownloadURL();
+  }
 
   Future<void> _register() async {
     try {
@@ -19,12 +46,24 @@ class _SignUpPageState extends State<SignUpPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // 注册成功
+      String imageUrl = '';
+      if (_image != null) {
+        imageUrl = await _uploadImage(_image!);
+      }
+      User? user = userCredential.user;
+      await FirebaseFirestore.instance.collection('user_info').doc(user!.uid).set({
+        'full_name': _nameController.text.trim(),
+        'email': user.email,
+        'avatar_url': imageUrl,
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("User registered: ${userCredential.user!.email}")),
+        SnackBar(content: Text("User registered with image: ${user.email}")),
+      );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => MyHomePage(title: 'HeliosRise')),
       );
     } on FirebaseAuthException catch (e) {
-      // 显示错误消息
       var errorMessage = "An error occurred, please try again";
       if (e.code == 'weak-password') {
         errorMessage = 'The password provided is too weak.';
@@ -43,58 +82,75 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  void _navigateToLogin() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: const Text('Sign Up'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                addUser().then((_) {
-                  // 这里可以添加一些用户反馈，比如一个确认消息
-                  print('User has been added successfully.');
-                }).catchError((error) {
-                  // 错误处理
-                  print('There was an error adding the user: $error');
-                });
-              },
-              child: Text('Add User'),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_image != null)
+                CircleAvatar(
+                  radius: 60,
+                  backgroundImage: FileImage(_image!),
+                ),
+              TextButton(
+                onPressed: _pickImage,
+                child: Text(_image == null ? 'Pick an Image' : 'Change Image'),
+              ),
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _register,
+                child: const Text('Sign Up'),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Already have an account? "),
+                  TextButton(
+                    onPressed: _navigateToLogin,
+                    child: Text('Log in', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => MyHomePage(title: 'HeliosRise')),
+                  );
+                },
+                child: const Text('Skip'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-Future<void> addUser() async {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  return users
-      .add({
-    'full_name': "Jane Doe", // John Doe
-    'company': "Stokes and Sons",
-    'age': 42
-  })
-      .then((value) => print("User Added"))
-      .catchError((error) => print("Failed to add user: $error"));
 }

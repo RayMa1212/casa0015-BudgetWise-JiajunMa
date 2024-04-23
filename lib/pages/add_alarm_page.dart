@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:helios_rise/services/firebase_service.dart';
+import 'package:helios_rise/services/firestore_service.dart';
 import 'package:helios_rise/services/location_service.dart';
 import 'package:helios_rise/pages/day_info_page.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +23,7 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
   final _travelMethods = ['walking', 'driving', 'bicycling', 'transit'];
   final _wakeUpPolicies = ['Adaptive', 'Fixed'];
   String? _wakeUpPolicy;
-  bool allow_later_than_set = false;
+  // bool allow_later_than_set = false;
   TimeOfDay? _arrivalTime;
   int _washingTime = 0;
   LatLng? destinationLatLng;
@@ -79,28 +79,28 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
     }
   }
 
-  Future<List<LatLng>?> getRouteCoordinates() async {
-    final LatLng? currentPosition = await LocationService().getCurrentLocation();
-    List<Map<String, dynamic>> documentData = await FirestoreService().fetchData();
-    String destination = documentData[0]["destination"];
-    if (currentPosition != null && destination.isNotEmpty) {
-      try {
-        destinationLatLng = await LocationService().findPlace(destination);
-        final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
-        if (safeDestinationLatLng != null) {
-          Map<String, dynamic> data = await LocationService().getRouteData(currentPosition, safeDestinationLatLng);
-          String encodedPath = await LocationService().getRouteCoordinates(data);
-          estimatedTime = await LocationService().getTravelTime(data);
-          List<LatLng> points = LocationService().decodePolyline(encodedPath);
-          return points; // 返回路线点的列表
-        }
-      } catch (e) {
-        // 处理异常，给用户适当的反馈
-        print('Error fetching route: $e');
-      }
-    }
-    return null; // 在无法获取路线数据的情况下返回 null
-  }
+  // Future<List<LatLng>?> getRouteCoordinates() async {
+  //   final LatLng? currentPosition = await LocationService().getCurrentLocation();
+  //   List<Map<String, dynamic>> documentData = await FirestoreService().fetchData();
+  //   String destination = documentData[0]["destination"];
+  //   if (currentPosition != null && destination.isNotEmpty) {
+  //     try {
+  //       destinationLatLng = await LocationService().findPlace(destination);
+  //       final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
+  //       if (safeDestinationLatLng != null) {
+  //         Map<String, dynamic> data = await LocationService().getRouteData(currentPosition, safeDestinationLatLng);
+  //         String encodedPath = await LocationService().getRouteCoordinates(data);
+  //         estimatedTime = await LocationService().getTravelTime(data);
+  //         List<LatLng> points = LocationService().decodePolyline(encodedPath);
+  //         return points; // 返回路线点的列表
+  //       }
+  //     } catch (e) {
+  //       // 处理异常，给用户适当的反馈
+  //       print('Error fetching route: $e');
+  //     }
+  //   }
+  //   return null; // 在无法获取路线数据的情况下返回 null
+  // }
 
   Widget _buildSuggestions() {
     // 判断是否有建议并显示，这里简化处理为直接返回一个Container
@@ -230,15 +230,15 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              CheckboxListTile(
-                value: allow_later_than_set,
-                onChanged: (bool? value) {
-                  setState(() {
-                    allow_later_than_set= value!;
-                  });
-                },
-                title: const Text('Allow later than set'),
-              ),
+              // CheckboxListTile(
+              //   value: allow_later_than_set,
+              //   onChanged: (bool? value) {
+              //     setState(() {
+              //       allow_later_than_set= value!;
+              //     });
+              //   },
+              //   title: const Text('Allow later than set'),
+              // ),
 
 
               SizedBox(height: 8),
@@ -338,7 +338,7 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                       destination: _destinationController.text,
                       travelMethods: _travelMethods,
                       wakeUpPolicy: _wakeUpPolicy ?? '',
-                      allowLaterThanSet: allow_later_than_set,
+                      // allowLaterThanSet: allow_later_than_set,
                       timeToArrive: _arrivalTime?.format(context) ?? '',
                       currentPosition: currentPosition,
                       destinationPosition: destinationPosition,
@@ -370,5 +370,7 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
       ),
     );
   }
+
+
 
 }

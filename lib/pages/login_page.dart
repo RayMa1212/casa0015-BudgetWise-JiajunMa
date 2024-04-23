@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helios_rise/pages/register_page.dart';
+
+import 'home_page.dart';
 
 
 
@@ -22,6 +25,9 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
       print("User logged in: ${userCredential.user}");
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => MyHomePage(title: 'HeliosRise')),
+      );
       // 登录成功后的逻辑，比如导航到主页
     } on FirebaseAuthException catch (e) {
       // 登录失败的处理，比如显示错误信息
@@ -54,6 +60,28 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: _login,
               child: Text('Login'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Do not have an account? "),
+                TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                    );
+                  },
+                  child: Text('Sign Up', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyHomePage(title: 'HeliosRise')),
+                );
+              },
+              child: const Text('Skip'),
             ),
           ],
         ),

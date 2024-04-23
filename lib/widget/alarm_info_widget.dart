@@ -1,36 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:helios_rise/info/alarm_info.dart';
+import 'package:intl/intl.dart';
 
-class AlarmInfoWidget extends StatelessWidget {
+class AlarmInfoWidget extends StatefulWidget {
   final AlarmInfo alarmInfo;
+  final Map<String, dynamic> travelTimes;
 
-  const AlarmInfoWidget({Key? key, required this.alarmInfo}) : super(key: key);
+  const AlarmInfoWidget({
+    Key? key,
+    required this.alarmInfo,
+    required this.travelTimes
+  }) : super(key: key);
+
+  @override
+  _AlarmInfoWidgetState createState() => _AlarmInfoWidgetState();
+}
+
+class _AlarmInfoWidgetState extends State<AlarmInfoWidget> {
+  String? adjustedAlarmTime;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateAdjustedAlarmTime();
+  }
+
+  void calculateAdjustedAlarmTime() {
+    DateTime timeToArrive = DateFormat('HH:mm').parse(widget.alarmInfo.timeToArrive);
+    int washingTime = widget.alarmInfo.washingTime;
+    int? travelTimeForPriorityZero = widget.travelTimes.entries
+        .where((entry) => entry.value['priority'] == 0)
+        .map((entry) => entry.value['duration'])
+        .first;
+
+    DateTime adjustedTime = timeToArrive.subtract(Duration(minutes: travelTimeForPriorityZero! + washingTime));
+    setState(() {
+      adjustedAlarmTime = DateFormat('HH:mm').format(adjustedTime);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // 允许内容滚动
+    return SingleChildScrollView(
       child: Card(
         elevation: 4,
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // 使Column高度适应内容
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Destination: ${alarmInfo.destination}',
+                'Destination: ${widget.alarmInfo.destination}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              _buildInfoRow('Time to Arrive:', alarmInfo.timeToArrive),
-              _buildInfoRow('Travel Methods:', alarmInfo.travelMethods.join(', ')),
-              _buildInfoRow('Wake Up Policy:', alarmInfo.wakeUpPolicy),
-              _buildInfoRow('Allow Later Arrival:', alarmInfo.allowLaterThanSet ? "Yes" : "No"),
-              _buildInfoRow('Washing Time:', '${alarmInfo.washingTime} minutes'),
+              Text(
+                'Adjusted Wake Up Time: ${adjustedAlarmTime ?? "Calculating..."}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              _buildInfoRow('Time to Arrive:', widget.alarmInfo.timeToArrive),
+              _buildInfoRow('Preferred Travel Methods:', widget.alarmInfo.travelMethods[0]),
+              _buildInfoRow('Wake Up Policy:', widget.alarmInfo.wakeUpPolicy),
+              _buildInfoRow('Washing Time:', '${widget.alarmInfo.washingTime} minutes'),
               Divider(),
-              _buildLocationInfo(alarmInfo),
+              _buildLocationInfo(widget.alarmInfo),
             ],
           ),
         ),
@@ -54,7 +90,7 @@ class AlarmInfoWidget extends StatelessWidget {
     return Row(
       children: <Widget>[
         Icon(Icons.location_on, color: Colors.red),
-        SizedBox(width: 8), // Add some space between icon and text
+        SizedBox(width: 8),
         Expanded(
           child: Text(
             'From: (${alarmInfo.currentPosition.latitude}, ${alarmInfo.currentPosition.longitude})\nTo: (${alarmInfo.destinationPosition.latitude}, ${alarmInfo.destinationPosition.longitude})',

@@ -1,15 +1,31 @@
+import 'dart:async';
 import 'dart:core';
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:helios_rise/services/firebase_service.dart';
+import 'package:helios_rise/pages/feedback_page.dart';
+import 'package:helios_rise/services/firestore_service.dart';
 import 'package:helios_rise/services/location_service.dart';
 import 'package:helios_rise/pages/day_info_page.dart';
 import 'package:helios_rise/info/alarm_info.dart';
+import 'package:helios_rise/services/notification_service.dart';
+import 'package:helios_rise/pages/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helios_rise/services/weather_service.dart';
 import 'package:helios_rise/widget/alarm_info_widget.dart';
+import 'package:helios_rise/widget/add_alarm_widget.dart';
+import 'package:helios_rise/services/firebase_auth_service.dart';
+import 'package:helios_rise/services/clock_service.dart';
 import 'dart:math';
 
-enum DisplaySelection { morning, evening, map}
+import 'package:helios_rise/services/clock_service.dart';
+import '../services/posture_service.dart';
+import '../services/travel_service.dart';
+import 'edit_profile_page.dart';
+
+enum DisplaySelection { morning, evening, map, user}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -44,6 +60,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _setUser() {
+    setState(() {
+      _selection = DisplaySelection.user;
+    });
+  }
+
   Set<Marker> _markers = {};
   LatLng? destinationLatLng;
   late GoogleMapController _mapController;
@@ -68,9 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
-
-
-
 
   static final CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(51.5, 0.13),
@@ -126,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     List<LatLng>? points = await getRouteCoordinates(nextAlarmInfo);
+    await getRouteCoordinatesWithMode(nextAlarmInfo, 'trasit');
     if (points != null && points.isNotEmpty) {
       final PolylineId routePolylineId = PolylineId('route');
       setState(() {
@@ -143,6 +163,59 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Unable to fetch route coordinates.");
     }
   }
+
+
+  Future<List<LatLng>?> getRouteCoordinatesWithMode(nextAlarmInfo, mode) async {
+    final LatLng? currentPosition = await LocationService().getCurrentLocation();
+    // List<Map<String, dynamic>> documentData = await FirestoreService().fetchNextActiveAlarm();
+    String destination = nextAlarmInfo.destination;
+    if (currentPosition != null && destination.isNotEmpty) {
+      try {
+        destinationLatLng = await LocationService().findPlace(destination);
+        final LatLng safeDestinationLatLng = destinationLatLng!; // 使用 ! 断言非空，并赋值给本地变量
+        if (safeDestinationLatLng != null) {
+          Map<String, dynamic> data = await LocationService().getRouteDataWithMode(currentPosition, safeDestinationLatLng, mode);
+          printRouteDetails(data);
+        }
+      } catch (e) {
+        // 处理异常，给用户适当的反馈
+        print('Error fetching route: $e');
+      }
+    }
+    return null; // 在无法获取路线数据的情况下返回 null
+  }
+
+  void printRouteDetails(Map<String, dynamic> data) {
+    if (data['status'] == 'OK') {
+      var routes = data['routes'];
+      if (routes.isNotEmpty) {
+        var route = routes[0];
+        var leg = route['legs'][0];
+        var distance = leg['distance']['text'];
+        var duration = leg['duration']['text'];
+        var startAddress = leg['start_address'];
+        var endAddress = leg['end_address'];
+
+        print('Route from $startAddress to $endAddress');
+        print('Distance: $distance');
+        print('Duration: $duration');
+
+        // Optionally, print step-by-step instructions
+        print('Steps:');
+        var steps = leg['steps'];
+        for (var step in steps) {
+          var htmlInstructions = step['html_instructions'].replaceAll(RegExp(r'<[^>]*>'), '');
+          var stepDistance = step['distance']['text'];
+          print('$htmlInstructions ($stepDistance)');
+        }
+      } else {
+        print('No routes available.');
+      }
+    } else {
+      print('Error fetching route: ${data['status']}');
+    }
+  }
+
 
 
 
@@ -202,13 +275,93 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  CollectionReference user_info = FirebaseFirestore.instance.collection('user_info');
+
+  final CloudService _cloudService = CloudService();
+  final WeatherService _weatherService = WeatherService();
+  late Future<Map<String, dynamic>> travelTimes;
+  final TravelService _travelService = TravelService();
+
+  void printTravelTimes() async {
+    try {
+      Map<String, dynamic> travelTimes = await _travelService.getTravelTimes(nextAlarmInfo!);
+      travelTimes.forEach((key, value) {
+        print('$key travel time: ${value['duration']} minutes');
+      });
+    } catch (e) {
+      print('Error getting travel times: $e');
+    }
+  }
+
+  Future<void> _fetchTravelTime() async {
+    try {
+      nextAlarmInfo = await FirestoreService().fetchNextActiveAlarm();
+      if (nextAlarmInfo != null && mounted) {
+        setState(() {
+          travelTimes = _travelService.getTravelTimes(nextAlarmInfo!);
+          printTravelTimes();
+        });
+      } else {
+        print("nextAlarmInfo is null");
+      }
+    } catch (e) {
+      print('Failed to fetch next active alarm: $e');
+    }
+  }
+
+  // late Future<Map<String, dynamic>?> routeFuture;
+
+  // Future<Map<String, dynamic>?> getRouteCoordinatesWithMode2(AlarmInfo nextAlarmInfo, String mode) async {
+  //   final LatLng? currentPosition = await LocationService().getCurrentLocation();
+  //   String destination = nextAlarmInfo.destination;
+  //
+  //   if (currentPosition == null || destination.isEmpty) {
+  //     print("Current position or destination is not available.");
+  //     return null; // 提前返回，避免深层嵌套
+  //   }
+  //
+  //   try {
+  //     LatLng? destinationLatLng = await LocationService().findPlace(destination);
+  //     if (destinationLatLng == null) {
+  //       print("Destination not found.");
+  //       return null;
+  //     }
+  //
+  //     Map<String, dynamic> data = await LocationService().getRouteDataWithMode(currentPosition, destinationLatLng, mode);
+  //     if (data.isEmpty) {
+  //       print("No route data available.");
+  //       return null;
+  //     }
+  //     return data;
+  //   } catch (e) {
+  //     print('Error fetching route data: $e');
+  //     return null; // 在捕获异常时返回null
+  //   }
+  // }
+
 
   @override
   void initState() {
     super.initState();
-
+    // Initialize with an empty map to avoid initial null error before pressing the button
     _fetchNextActiveAlarm();
     _fetchActiveAlarms();
+    _cloudService.startPolling();
+    _weatherService.startPolling();
+    _fetchTravelTime();
+    // routeFuture = getRouteCoordinatesWithMode2(nextAlarmInfo!, 'transit');
+  }
+
+
+
+  @override
+  void dispose() {
+    _cloudService.stopPolling();
+    _cloudService.dispose();
+    _weatherService.stopPolling();
+    _weatherService.dispose();
+    super.dispose();
   }
 
 
@@ -274,13 +427,29 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: PageView(
                 children: [
-                  // 第一个页面：闹钟信息
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: nextAlarmInfo != null
-                        ? AlarmInfoWidget(alarmInfo: nextAlarmInfo!)
+                        ? FutureBuilder<Map<String, dynamic>>(
+                      future: _travelService.getTravelTimes(nextAlarmInfo!),  // 获取旅行时间
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            Map<String, dynamic> travelTimes = snapshot.data!;
+                            return AlarmInfoWidget(
+                              alarmInfo: nextAlarmInfo!,
+                              travelTimes: travelTimes,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error fetching travel times: ${snapshot.error}');
+                          }
+                        }
+                        return CircularProgressIndicator();  // 加载中显示进度指示器
+                      },
+                    )
                         : Center(child: Text("No upcoming alarms.", style: TextStyle(fontSize: 18))),
-                  ),
+                  )
+
                 ],
               ),
             ),
@@ -306,12 +475,143 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
                   ),
                 ),
+
+                // ElevatedButton(
+                //   onPressed: (){
+                //     stopSound();
+                //   },
+                //   child: Text('Stop Alarm')
+                // ),
+                // ElevatedButton(
+                //   onPressed: setOneShotAlarm,
+                //   child: Text('Set One Shot Alarm'),
+                // ),
+                // FutureBuilder<Map<String, dynamic>?>(
+                //   future: routeFuture,
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.done) {
+                //       if (snapshot.hasData && snapshot.data != null) {
+                //         return SingleChildScrollView(
+                //           child: Padding(
+                //             padding: EdgeInsets.all(16.0),
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: <Widget>[
+                //                 Text("Distance: ${snapshot.data!['routes'][0]['legs'][0]['distance']['text']}", style: TextStyle(fontSize: 18)),
+                //                 Text("Duration: ${snapshot.data!['routes'][0]['legs'][0]['duration']['text']}", style: TextStyle(fontSize: 18)),
+                //                 // 可以添加更多细节
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       } else if (snapshot.hasError) {
+                //         return Text("Error: ${snapshot.error}");
+                //       }
+                //     }
+                //     return Center(child: CircularProgressIndicator());
+                //   },
+                // ),
               ],
             ),
           ),
 
         );
         break;
+      case DisplaySelection.user:
+        if (userId == null) {
+          // User is not logged in
+          bodyContent = Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('No user is currently signed in.', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  ),
+                  child: Text('Go to Login Page'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          // User is logged in, show user info
+          bodyContent = FutureBuilder<DocumentSnapshot>(
+            future: user_info.doc(userId).get(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text("Something went wrong: ${snapshot.error}"));
+              }
+              if (snapshot.hasData && snapshot.data!.exists) {
+                Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                return ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(
+                        data['avatar_url'] ?? 'https://via.placeholder.com/150',
+                      ),
+                    ),
+                    Divider(height: 20, thickness: 2),
+                    ListTile(
+                      title: Text('Name'),
+                      subtitle: Text(data['full_name']),
+                      trailing: Icon(Icons.edit),
+                      onTap: () {
+                        // Handle edit name
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Email'),
+                      subtitle: Text(data['email']),
+                      trailing: Icon(Icons.edit),
+                      onTap: () {
+                        // Handle edit name
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Tell Us About Yourself'),
+                      subtitle: Text(data['bio'] ?? 'Not provided'), // Add 'bio' field to your Firestore
+                      trailing: Icon(Icons.edit),
+                      onTap: () {
+                        // Handle edit name
+                      },
+                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     Navigator.of(context).pushReplacement(
+                    //       MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    //     );
+                    //   },
+                    //   child: const Text('Edit'),
+                    // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => FeedbackPage()),
+                        );
+                      },
+                      child: const Text('Feedback'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Authservice().signOut(context);
+                      },
+                      child: const Text('Sign Out'),
+                    ),
+                  ],
+                );
+              }
+              return Center(child: Text("User not found"));
+            },
+          );
+          break;
+        }
     }
 
     Color selectedColor = Theme.of(context).colorScheme.primary;
@@ -321,13 +621,115 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: <Widget>[
+          StreamBuilder<Map>(
+            stream: _weatherService.controller.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var temperature = snapshot.data!['current']['temp'].toString();
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "$temperature°C",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Text(
+                  "Failed to get data",
+                  style: TextStyle(color: Colors.red, fontSize: 24),
+                );
+              }
+              return CircularProgressIndicator(); // 加载中
+            },
+          ),
+
+
+          StreamBuilder<Map>(
+            stream: _weatherService.controller.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var weather = snapshot.data!['current']['weather'][0]['main'].toString();
+                IconData iconData = Icons.sunny;
+                switch (weather) {
+                  case 'Clear':
+                    iconData = Icons.sunny;
+                    break;
+                  case 'Clouds':
+                    iconData = Icons.cloud;
+                    break;
+                  case 'Thunderstorm':
+                    iconData = Icons.thunderstorm;
+                    break;
+                  case 'Drizzle':
+                  case 'Rain':
+                    iconData = Icons.cloudy_snowing;
+                    break;
+                  case 'Snow':
+                    iconData = Icons.snowing;
+                    break;
+                  case 'Mist':
+                  case 'Smoke':
+                  case 'Haze':
+                  case 'Dust':
+                  case 'Fog':
+                  case 'Sand':
+                  case 'Ash':
+                  case 'Squall':
+                  case 'Tornado':
+                    iconData = Icons.foggy;
+                    break;
+                  default:
+                    iconData = Icons.sunny;
+                }
+                return IconButton(
+                  icon: Icon(iconData),
+                  onPressed: () => print("Weather Icon pressed!"),
+                );
+              } else if (snapshot.hasError) {
+                return IconButton(
+                  icon: Icon(Icons.error),
+                  onPressed: () => print("Error in weather data"),
+                );
+              }
+              return CircularProgressIndicator();
+            },
+          ),
+          StreamBuilder<bool>(
+            stream: _cloudService.controller.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // 根据布尔值选择图标
+                IconData iconData = snapshot.data! ? Icons.bed : Icons.accessibility;
+                return IconButton(
+                  icon: Icon(iconData),
+                  onPressed: () {
+                    // 可以在这里添加点击图标后的操作
+                    print("Icon pressed!");
+                  },
+                );
+              } else if (snapshot.hasError) {
+                // 处理错误情况
+                return Text("Err!");
+              }
+              // 默认情况下显示一个循环指示器
+              return CircularProgressIndicator();
+            },
+          ),
+        ],
       ),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
         child: bodyContent,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+
+        onPressed: () {
+          showAddAlarmSheet(context);
+        },
+
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -335,7 +737,8 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: const CircularNotchedRectangle(),
         notchMargin: 6.0,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.nights_stay),
@@ -350,10 +753,16 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'Morning View',
             ),
             IconButton(
-              icon: Icon(Icons.map),
+              icon: Icon(Icons.location_on),
               color: _selection == DisplaySelection.map ? selectedColor : unselectedColor,  // 根据当前的选择改变颜色
               onPressed: _setMap,
               tooltip: 'Map View',
+            ),
+            IconButton(
+              icon: Icon(Icons.person),
+              color: _selection == DisplaySelection.user ? selectedColor : unselectedColor,  // 根据当前的选择改变颜色
+              onPressed: _setUser,
+              tooltip: 'User View',
             ),
           ],
         ),
