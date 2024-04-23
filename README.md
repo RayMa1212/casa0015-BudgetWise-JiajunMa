@@ -41,7 +41,8 @@ The primary goal for all these groups is to enhance their morning routine throug
 <img width="461" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/c9d673b0-0605-406e-ad44-310734b7f544">
 
 ### Day of Week Page
-![image](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/215c9391-fe35-4611-a8ad-c885ffeab0ba)
+![image](https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/d29f387b-d007-4a3b-9b94-a6ed652bd625)
+
 
 ### Add Alarm Page
 <img width="293" alt="image" src="https://github.com/RayMa1212/casa0015-HeliosRise-JiajunMa/assets/66763057/ae9f2365-d2e2-482a-9842-dd2a32d29b63">
